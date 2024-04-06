@@ -3,7 +3,6 @@ package com.munish.macsec.softwareSecurity.servlets;
 import com.munish.macsec.softwareSecurity.db.Feedback;
 import com.munish.macsec.softwareSecurity.db.DatabaseUtil;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,10 +12,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class FeedbackServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("username") != null) {
-            String username = (String) session.getAttribute("username");
             StringBuilder htmlResponse = new StringBuilder();
             htmlResponse.append("<!DOCTYPE html>\n");
             htmlResponse.append("<html>\n");
@@ -40,18 +38,20 @@ public class FeedbackServlet extends HttpServlet {
             List<Feedback> feedbackEntries = null;
             try {
                 feedbackEntries = DatabaseUtil.getAllFeedback();
-            } catch (SQLException e) {
+            } catch (SQLException |IOException e) {
                 e.printStackTrace();
             }
             htmlResponse.append("    <tr>\n");
             htmlResponse.append("        <th>Username</th>\n");
             htmlResponse.append("        <th>Feedback</th>\n");
             htmlResponse.append("    </tr>\n");
-            for (Feedback entry : feedbackEntries) {
-                htmlResponse.append("    <tr>\n");
-                htmlResponse.append("        <td>").append(entry.getUsername()).append("</td>\n");
-                htmlResponse.append("        <td>").append(entry.getFeedback()).append("</td>\n");
-                htmlResponse.append("    </tr>\n");
+            if (feedbackEntries != null) {
+                for (Feedback entry : feedbackEntries) {
+                    htmlResponse.append("    <tr>\n");
+                    htmlResponse.append("        <td>").append(entry.getUsername()).append("</td>\n");
+                    htmlResponse.append("        <td>").append(entry.getFeedback()).append("</td>\n");
+                    htmlResponse.append("    </tr>\n");
+                }
             }
             htmlResponse.append("    <tr>\n");
             htmlResponse.append("        <td><a href=\"logout.jsp\">Logout</a></td>\n");
@@ -61,13 +61,21 @@ public class FeedbackServlet extends HttpServlet {
             htmlResponse.append("</body>\n");
             htmlResponse.append("</html>");
             response.setContentType("text/html");
-            response.getWriter().println(htmlResponse.toString());
+            try {
+                response.getWriter().println(htmlResponse);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            try {
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("username") != null) {
             String username = (String) session.getAttribute("username");

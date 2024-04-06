@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class Common {
     private static byte[] KEY=null;
     private static final String AES_ALGORITHM = "AES";
-    public static void main(String argv[]) throws Exception {
+    public static void main(String[] argv) throws Exception {
         System.out.println(decrypt(encrypt("mysimplepassword")));
         DatabaseUtil.updatePassword("sharma.munish20@gmail.com",encrypt("mysimplepassword"));
     }
@@ -37,10 +37,10 @@ public class Common {
         if(KEY!=null)
             return KEY;
         InputStream is = Common.class.getClassLoader().getResourceAsStream("key.txt");
-        BufferedReader br=new BufferedReader(new InputStreamReader(is));
         try {
+            BufferedReader br=new BufferedReader(new InputStreamReader(is));
             KEY=hexStringToByteArray(br.readLine());
-        } catch (IOException e) {
+        } catch (IOException |NullPointerException e) {
             e.printStackTrace();
             System.exit(1);
         }

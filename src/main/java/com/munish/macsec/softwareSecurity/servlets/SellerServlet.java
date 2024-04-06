@@ -3,7 +3,6 @@ package com.munish.macsec.softwareSecurity.servlets;
 import com.munish.macsec.softwareSecurity.db.Product;
 import com.munish.macsec.softwareSecurity.db.DatabaseUtil;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,12 +12,21 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class SellerServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("username") == null) {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            try {
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        List<Product> products = DatabaseUtil.getAllProducts();
+        List<Product> products = null;
+        try {
+            products = DatabaseUtil.getAllProducts();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         StringBuilder htmlResponse = new StringBuilder();
         htmlResponse.append("<!DOCTYPE html>\n");
         htmlResponse.append("<html>\n");
@@ -89,11 +97,15 @@ public class SellerServlet extends HttpServlet {
         htmlResponse.append("</body>\n");
         htmlResponse.append("</html>");
         response.setContentType("text/html");
-        response.getWriter().println(htmlResponse);
+        try {
+            response.getWriter().println(htmlResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("username") != null) {
             String action = request.getParameter("action");
@@ -104,35 +116,49 @@ public class SellerServlet extends HttpServlet {
                             addProduct(request, response);
                         } catch (SQLException e) {
                             session.setAttribute("duplicate","1");
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                         break;
                     case "qty":
                         try {
                             updateQty(request, response);
-                        } catch (SQLException e) {
+                        } catch (SQLException | IOException e) {
                             e.printStackTrace();
                         }
                         break;
                     case "price":
                         try {
                             updatePrice(request, response);
-                        } catch (SQLException e) {
+                        } catch (SQLException | IOException e) {
                             e.printStackTrace();
                         }
                         break;
                     default:
                         break;
                 }
-                response.sendRedirect(request.getContextPath() + "/seller");
+                try {
+                    response.sendRedirect(request.getContextPath() + "/seller");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
-                response.sendRedirect(request.getContextPath() + "/seller");
+                try {
+                    response.sendRedirect(request.getContextPath() + "/seller");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            try {
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void addProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+    private void addProduct(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         String price = request.getParameter("price");
@@ -145,12 +171,12 @@ public class SellerServlet extends HttpServlet {
         DatabaseUtil.addProduct(product);
     }
 
-    private void updateQty(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+    private void updateQty(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
         int productId = Integer.parseInt(request.getParameter("productId"));
         int updatedQuantity = Integer.parseInt(request.getParameter("quantity"));
         DatabaseUtil.updateQty(productId, updatedQuantity);
     }
-    private void updatePrice(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+    private void updatePrice(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
         int productId = Integer.parseInt(request.getParameter("productId"));
         String price = request.getParameter("price");
         DatabaseUtil.updatePrice(productId, price);
