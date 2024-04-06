@@ -31,7 +31,7 @@ public class FeedbackServlet extends HttpServlet {
             htmlResponse.append("    </tr>\n");
             htmlResponse.append("    <tr>\n");
             htmlResponse.append("        <td colspan=\"2\">\n");
-            htmlResponse.append("            <form action=\"feedback\" method=\"post\">\n");
+            htmlResponse.append("            <form action=\"Feedback\" method=\"post\">\n");
             htmlResponse.append("                <textarea name=\"feedback\" rows=\"4\" cols=\"50\" maxlength=\"255\"></textarea><br>\n");
             htmlResponse.append("                <center><input type=\"submit\" value=\"Submit Feedback\"></center>\n");
             htmlResponse.append("            </form>\n");

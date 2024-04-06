@@ -83,7 +83,7 @@ public class SellerServlet extends HttpServlet {
 
 
 
-        htmlResponse.append("<h2><a href=\"" + request.getContextPath() + "/feedback\">Leave Feedback</a></h2>\n");
+        htmlResponse.append("<h2><a href=\"" + request.getContextPath() + "/Feedback\">Leave Feedback</a></h2>\n");
         htmlResponse.append("<br><a href=logout.jsp>Logout</a>\n");
         htmlResponse.append("<br><a href=changePassword>Change Password</a>\n");
         htmlResponse.append("</body>\n");

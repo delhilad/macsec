@@ -85,13 +85,13 @@ public class UserHomeServlet extends HttpServlet {
                 htmlResponse.append("        </tr>\n");
             }
             htmlResponse.append("    </table>\n");
-            htmlResponse.append("    <form id=\"buyForm\" action=\"userHome\" method=\"post\" style=\"display: none;\">\n");
+            htmlResponse.append("    <form id=\"buyForm\" action=\"UserHome\" method=\"post\" style=\"display: none;\">\n");
             htmlResponse.append("        <input type=\"hidden\" name=\"creditCardNumber\" id=\"creditCardNumber\">\n");
             htmlResponse.append("        <input type=\"hidden\" name=\"cvv\" id=\"cvv\">\n");
             htmlResponse.append("        <input type=\"hidden\" name=\"productId\" id=\"productId\">\n");
             htmlResponse.append("        <input type=\"hidden\" name=\"quantity\" id=\"quantity\">\n");
             htmlResponse.append("    </form>\n");
-            htmlResponse.append("<h2><a href=feedback>Feedback</a>");
+            htmlResponse.append("<h2><a href=Feedback>Feedback</a>");
             htmlResponse.append("<br><a href=logout.jsp>Logout</a>\n");
             htmlResponse.append(("<br><a href=changePassword>Change Password</a>\n"));
             htmlResponse.append("</body>\n");
@@ -132,9 +132,9 @@ public class UserHomeServlet extends HttpServlet {
 
                     if (!orderCreated.equals("0")) {
                         session.setAttribute("order", orderCreated);
-                        response.sendRedirect(request.getContextPath() + "/orderSuccess");
+                        response.sendRedirect(request.getContextPath() + "/OrderSuccess");
                     } else {
-                        response.sendRedirect(request.getContextPath() + "/orderError.jsp");
+                        response.sendRedirect(request.getContextPath() + "/OrderError.jsp");
                     }
                 } else {
                     session.setAttribute("invalidCreditCard", "1");

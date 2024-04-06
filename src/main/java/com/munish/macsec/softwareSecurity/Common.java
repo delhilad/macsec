@@ -3,6 +3,7 @@ package com.munish.macsec.softwareSecurity;
 import com.munish.macsec.softwareSecurity.db.DatabaseUtil;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.Base64;
@@ -10,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Common {
-    private static final String AES_KEY_ENV_VARIABLE = "AES_KEY";
+    private static byte[] KEY=null;
     private static final String AES_ALGORITHM = "AES";
     public static void main(String argv[]) throws Exception {
         System.out.println(decrypt(encrypt("mysimplepassword")));
@@ -33,7 +34,17 @@ public class Common {
     }
 
     public static byte[] getKey() {
-        return hexStringToByteArray("39f99dc9b37d3d14fe6d7c228828dba700f753fd74e18eafd0f698729dc18389");
+        if(KEY!=null)
+            return KEY;
+        InputStream is = Common.class.getClassLoader().getResourceAsStream("key.txt");
+        BufferedReader br=new BufferedReader(new InputStreamReader(is));
+        try {
+            KEY=hexStringToByteArray(br.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return KEY;
     }
     public static byte[] hexStringToByteArray(String hexString) {
         int len = hexString.length();
