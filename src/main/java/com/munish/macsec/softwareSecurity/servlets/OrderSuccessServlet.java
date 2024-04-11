@@ -27,7 +27,7 @@ public class OrderSuccessServlet extends HttpServlet {
             response.getWriter().println("<p>Your order has been successfully placed. Your order number is: " + orderNumber + "</p>");
             response.getWriter().println("<p><a href=\"" + request.getContextPath() + "/userHome\">Resume Shopping</a></p>");
             response.getWriter().println("<br><a href=logout.jsp>Logout</a>\n");
-            response.getWriter().println(("<br><a href=changePassword>Change Password</a>\n"));
+            response.getWriter().println(("<br><a href=ChangePassword>Change Password</a>\n"));
             response.getWriter().println("</body>");
             response.getWriter().println("</html>");
         } else {

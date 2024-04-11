@@ -93,7 +93,7 @@ public class UserHomeServlet extends HttpServlet {
             htmlResponse.append("    </form>\n");
             htmlResponse.append("<h2><a href=Feedback>Feedback</a>");
             htmlResponse.append("<br><a href=logout.jsp>Logout</a>\n");
-            htmlResponse.append(("<br><a href=changePassword>Change Password</a>\n"));
+            htmlResponse.append(("<br><a href=ChangePassword>Change Password</a>\n"));
             htmlResponse.append("</body>\n");
             htmlResponse.append("</html>");
 
@@ -121,6 +121,9 @@ public class UserHomeServlet extends HttpServlet {
                 String cvv = request.getParameter("cvv");
                 String prod = request.getParameter("productId");
                 String qty = request.getParameter("quantity");
+                if(Integer.parseInt(qty)<=0){
+                    return;
+                }
 
                 if (isValidCreditCard(creditCardNumber) && isValidCVV(cvv)) {
                     String orderCreated = "0";
